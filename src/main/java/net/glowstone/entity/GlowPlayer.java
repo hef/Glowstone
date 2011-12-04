@@ -466,7 +466,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @return value between 0 and 1: percent to next level.
      */
     public float getExp() {
-        float currentXp = experience - (7 + (getLevel() * 7 >> 1));
+        float currentXp = experience - (3.5f * getLevel() * (getLevel() + 1));
         float xpToLevel = (getLevel() + 1) * 7;
         return currentXp/xpToLevel;
     }
@@ -479,7 +479,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     public void setExp(float percentToLevel) {
         int baseXp = getLevel() * 7;
-        assert(baseXp < experience);
         float xpToLevel = (getLevel() + 1) * 7;
         experience = baseXp + (int)(percentToLevel * xpToLevel);
         updateLevel();
