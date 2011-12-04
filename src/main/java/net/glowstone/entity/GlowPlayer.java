@@ -411,6 +411,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public void setExperience(int exp) {
         setTotalExperience(experience - getExperience() + exp);
+        updateLevel();
     }
 
     public int getLevel() {
@@ -432,23 +433,31 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void setTotalExperience(int exp) {
-        int calcExperience = exp;
-        this.experience = exp;
-        level = 0;
-        while ((calcExperience -= (getLevel() + 1) * 7) > 0) ++level;
+        experience = exp;
+        updateLevel();
         session.send(createExperienceMessage());
     }
 
+    /**
+     * Recalculate level based on cumulative experience.
+     * TODO: solve recurence relation.
+     */
+    private void updateLevel()
+    {
+        level=0;
+        int xp = experience;
+        while(xp > level + 1 * 7) {
+            ++level;
+            xp-= level + 1 * 7;
+        }
+    }
     /**
      * Add xp to Player.
      * @param xp to add
      */
     public void giveExp(int xp) {
         experience += xp;
-        while(experience > (getLevel() + 1) * 7){
-            experience -= (getLevel() + 1) * 7;
-            ++level;            
-        }
+        updateLevel();
         session.send(createExperienceMessage());
     }
 
@@ -457,20 +466,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @return value between 0 and 1: percent to next level.
      */
     public float getExp() {
+        float currentXp = experience - (7 + (getLevel() * 7 >> 1));
         float xpToLevel = (getLevel() + 1) * 7;
-        return (float)experience/xpToLevel;
+        return currentXp/xpToLevel;
     }
 
     /** 
      * Set the experience progress to next level.
      * 0 sets to current level, 1 is next level
      * Values greater than 1 or less that 0 are undefined.
-     * TODO Test boundary conditions.
      * @param percentToLevel
      */
     public void setExp(float percentToLevel) {
+        int baseXp = getLevel() * 7;
+        assert(baseXp < experience);
         float xpToLevel = (getLevel() + 1) * 7;
-        experience = (int)(percentToLevel * xpToLevel);
+        experience = baseXp + (int)(percentToLevel * xpToLevel);
+        updateLevel();
+        session.send(createExperienceMessage());
     }
 
     public float getExhaustion() {
