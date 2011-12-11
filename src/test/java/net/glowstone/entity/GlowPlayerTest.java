@@ -136,9 +136,50 @@ public class GlowPlayerTest {
      */
     @Test
     public void testGetLevel() {
-        int expResult = 0;
-        int result = glowPlayer.getLevel();
-        assertEquals(expResult, result);
+        int expected = 0;
+        int actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+
+        glowPlayer.setTotalExperience(6);
+        expected = 0;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+        
+        glowPlayer.setTotalExperience(7);
+        expected = 1;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+
+        glowPlayer.setTotalExperience(20);
+        expected = 1;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+
+        glowPlayer.setTotalExperience(21);
+        expected = 2;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+        
+        glowPlayer.setTotalExperience(22);
+        expected = 2;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+        
+        glowPlayer.setTotalExperience(41);
+        expected = 2;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+        
+        glowPlayer.setTotalExperience(42);
+        expected = 3;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+        
+        glowPlayer.setTotalExperience(43);
+        expected = 3;
+        actual = glowPlayer.getLevel();
+        assertEquals(expected, actual);
+   
     }
 
     /**
@@ -146,11 +187,27 @@ public class GlowPlayerTest {
      */
     @Test
     public void testSetLevel() {
-        int level = 0;
-        int expLevel = 0;
-        glowPlayer.setLevel(level);
-        expLevel = glowPlayer.getLevel();
-        assertEquals(level, expLevel);
+        int expectedLevel = 0;
+        int actualLevel = 0;
+        glowPlayer.setLevel(expectedLevel);
+        actualLevel = glowPlayer.getLevel();
+        assertEquals(expectedLevel, actualLevel);
+        
+        expectedLevel = 1;
+        actualLevel = 1;
+        glowPlayer.setLevel(expectedLevel);
+        actualLevel = glowPlayer.getLevel();
+        assertEquals(expectedLevel, actualLevel);
+        
+        expectedLevel = 4;
+        actualLevel = 4;
+        int expectedXP = 40;
+        glowPlayer.setLevel(expectedLevel);
+        actualLevel = glowPlayer.getLevel();
+        int actualXP = glowPlayer.getTotalExperience();
+//        assertEquals(expectedLevel, actualLevel);
+        assertEquals(expectedXP, actualXP);
+        
     }
 
     /**
@@ -210,5 +267,4 @@ public class GlowPlayerTest {
         result = glowPlayer.getExp();
         assertEquals(percentToLevel, result, 0.0);
     }
-
 }

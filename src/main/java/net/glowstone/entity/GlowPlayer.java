@@ -411,20 +411,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public void setExperience(int exp) {
         setTotalExperience(experience - getExperience() + exp);
-        updateLevel();
     }
 
     public int getLevel() {
-        return level;
+       return (int) (Math.sqrt(experience / 3.5 + 0.25) - 0.5);
+ 
     }
 
     public void setLevel(int level) {
-        int calcExperience = getExperience();
-        this.level = level;
-        for (int i = 0; i <= level; i++) {
-            calcExperience += (level + 1) * 7;
-        }
-        setExperience(calcExperience);
+        float fLevel = level;
+        //experience = (int) (1.75*fLevel*(fLevel+2)+1.5*fLevel+2);
+        experience = (int) (1.75 * (fLevel*fLevel)+5*(fLevel)+2);
         session.send(createExperienceMessage());
     }
 
@@ -434,30 +431,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public void setTotalExperience(int exp) {
         experience = exp;
-        updateLevel();
         session.send(createExperienceMessage());
     }
 
-    /**
-     * Recalculate level based on cumulative experience.
-     * TODO: solve recurence relation.
-     */
-    private void updateLevel()
-    {
-        level=0;
-        int xp = experience;
-        while(xp > level + 1 * 7) {
-            ++level;
-            xp-= level + 1 * 7;
-        }
-    }
     /**
      * Add xp to Player.
      * @param xp to add
      */
     public void giveExp(int xp) {
         experience += xp;
-        updateLevel();
         session.send(createExperienceMessage());
     }
 
@@ -481,7 +463,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         int baseXp = getLevel() * 7;
         float xpToLevel = (getLevel() + 1) * 7;
         experience = baseXp + (int)(percentToLevel * xpToLevel);
-        updateLevel();
         session.send(createExperienceMessage());
     }
 
